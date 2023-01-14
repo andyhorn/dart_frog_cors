@@ -11,29 +11,67 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/developing-packages). 
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Adds CORS middleware for `dart_frog` server applications.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
-
-## Getting started
-
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Responds to `OPTIONS` requests and injects your CORS headers into your `Response`s.
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder. 
+1. Install the package:
 
 ```dart
-const like = 'sample';
+dart pub add dart_frog_cors
+```
+
+2. Add the middleware:
+
+```dart
+import 'package:dart_frog_cors/dart_frog_cors.dart';
+
+Handler middleware(Handler handler) {
+  return handler.use(cors());
+}
+```
+
+## Defaults
+
+The package includes the following defaults:
+
+* `Access-Control-Allow-Origin`: `*`
+* `Access-Control-Allow-Methods`: `GET,PUT,POST,PATCH,DELETE,OPTIONS`
+* `Access-Control-Allow-Headers`: `Origin,X-Requested-With,Content-Type,Accept,Authorization`
+
+### Overriding defaults
+
+You can easily override the defaults with your own values.
+
+```dart
+Handler middleware(Handler handler) {
+  return handler.use(cors(
+    allowOrigin: 'https://your-domain.com',
+    allowMethods: 'GET,POST,PUT',
+  ));
+}
+```
+
+### Additional headers
+
+You can also add your own `Map<String, String>` of headers to be injected using the `additional` property.
+
+```dart
+Handler middleware(Handler handler) {
+  return handler.use(cors(
+    additional: {
+      'Some-Key': 'SomeValue',
+    },
+  ));
+}
 ```
 
 ## Additional information
 
-TODO: Tell users more about the package: where to find more information, how to 
-contribute to the package, how to file issues, what response they can expect 
-from the package authors, and more.
+This is not an official `dart_frog` package.
+
+This package was based on this fabulous CORS example for the `shelf` server: [shelf_helpers](https://github.com/Kleak/shelf_helpers/blob/main/lib/src/middlewares/cors.dart)
