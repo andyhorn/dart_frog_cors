@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_cors/src/cors_defaults.dart';
 
-/// Immediately respond to `OPTIONS` requests with your CORS headers
-/// and injects CORS headers into every other [Response].
+/// Injects CORS headers into every [Response].
+///
+/// Also adds an immediate response to `OPTIONS` requests for preflight checks.
 Middleware cors({
   String allowOrigin = CorsDefaults.allowOrigin,
   String allowMethods = CorsDefaults.allowMethods,
