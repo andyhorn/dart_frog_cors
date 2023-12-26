@@ -15,7 +15,7 @@ void main() {
   late Response response;
   late Handler handler;
 
-  Map<String, String> getCapturedHeaders() {
+  Map<String, Object?> getCapturedHeaders() {
     return verify(
       () => response.copyWith(
         headers: captureAny(named: 'headers'),
