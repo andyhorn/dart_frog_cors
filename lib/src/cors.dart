@@ -13,10 +13,10 @@ Middleware cors({
   Map<String, String>? additional,
 }) {
   final headers = {
-    'Access-Control-Allow-Origin': allowOrigin,
-    'Access-Control-Allow-Methods': allowMethods,
-    'Access-Control-Allow-Headers': allowHeaders,
-    if (additional != null) ...additional
+    HttpHeaders.accessControlAllowOriginHeader: allowOrigin,
+    HttpHeaders.accessControlAllowMethodsHeader: allowMethods,
+    HttpHeaders.accessControlAllowHeadersHeader: allowHeaders,
+    if (additional != null) ...additional,
   };
 
   return (handler) {

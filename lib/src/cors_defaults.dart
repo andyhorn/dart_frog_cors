@@ -1,4 +1,4 @@
-class CorsDefaults {
+final class CorsDefaults {
   const CorsDefaults._();
 
   static const allowOrigin = '*';

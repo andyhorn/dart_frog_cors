@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_cors/dart_frog_cors.dart';
 import 'package:mocktail/mocktail.dart';
@@ -10,17 +12,21 @@ class MockResponse extends Mock implements Response {}
 class MockRequest extends Mock implements Request {}
 
 void main() {
+  const allowOriginHeader = HttpHeaders.accessControlAllowOriginHeader;
+  const allowMethodsHeader = HttpHeaders.accessControlAllowMethodsHeader;
+  const allowHeadersHeader = HttpHeaders.accessControlAllowHeadersHeader;
+
   late Request request;
   late RequestContext context;
   late Response response;
   late Handler handler;
 
   Map<String, String> getCapturedHeaders() {
-    return verify(
+    return Map.from(verify(
       () => response.copyWith(
         headers: captureAny(named: 'headers'),
       ),
-    ).captured.first;
+    ).captured.first);
   }
 
   group('cors', () {
@@ -39,6 +45,7 @@ void main() {
         return response;
       };
     });
+
     group('defaults', () {
       group('when the request is OPTIONS', () {
         setUp(() async {
@@ -50,16 +57,16 @@ void main() {
 
         test('the headers contain the default keys', () {
           final headers = result.headers;
-          expect(headers.containsKey('Access-Control-Allow-Origin'), isTrue);
-          expect(headers.containsKey('Access-Control-Allow-Methods'), isTrue);
-          expect(headers.containsKey('Access-Control-Allow-Headers'), isTrue);
+          expect(headers.containsKey(allowOriginHeader), isTrue);
+          expect(headers.containsKey(allowMethodsHeader), isTrue);
+          expect(headers.containsKey(allowHeadersHeader), isTrue);
         });
 
         test('the headers contain the default values', () {
           final headers = result.headers;
-          final allowOrigin = headers['Access-Control-Allow-Origin']!;
-          final allowMethods = headers['Access-Control-Allow-Methods']!;
-          final allowHeaders = headers['Access-Control-Allow-Headers']!;
+          final allowOrigin = headers[allowOriginHeader]!;
+          final allowMethods = headers[allowMethodsHeader]!;
+          final allowHeaders = headers[allowHeadersHeader]!;
 
           expect(allowOrigin, equals(CorsDefaults.allowOrigin));
           expect(allowMethods, equals(CorsDefaults.allowMethods));
@@ -88,16 +95,17 @@ void main() {
 
         test('it injects the default header keys', () {
           final headers = getCapturedHeaders();
-          expect(headers.containsKey('Access-Control-Allow-Origin'), isTrue);
-          expect(headers.containsKey('Access-Control-Allow-Methods'), isTrue);
-          expect(headers.containsKey('Access-Control-Allow-Headers'), isTrue);
+
+          expect(headers.containsKey(allowOriginHeader), isTrue);
+          expect(headers.containsKey(allowMethodsHeader), isTrue);
+          expect(headers.containsKey(allowHeadersHeader), isTrue);
         });
 
         test('it injects the default header values', () {
           final headers = getCapturedHeaders();
-          final allowOrigin = headers['Access-Control-Allow-Origin']!;
-          final allowMethods = headers['Access-Control-Allow-Methods']!;
-          final allowHeaders = headers['Access-Control-Allow-Headers']!;
+          final allowOrigin = headers[allowOriginHeader]!;
+          final allowMethods = headers[allowMethodsHeader]!;
+          final allowHeaders = headers[allowHeadersHeader]!;
 
           expect(allowOrigin, equals(CorsDefaults.allowOrigin));
           expect(allowMethods, equals(CorsDefaults.allowMethods));
